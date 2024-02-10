@@ -1,14 +1,20 @@
 package mx.uaemex.fi.linc34.rpixels.helper;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
+import javax.imageio.ImageIO;
+
 import javafx.scene.image.Image;
+import javafx.scene.image.PixelFormat;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -26,7 +32,7 @@ public class FXImageIO {
 	
 	public Image loadImageFromArgs(List<String> clArgs) {
 		
-		if (clArgs.isEmpty()) {
+		if (clArgs == null || clArgs.isEmpty()) {
 			return loadImageManually();
 		}
 		
@@ -74,8 +80,7 @@ public class FXImageIO {
 		
 		File out = fChooser.showSaveDialog(owner);
 		
-		System.out.println(out.canWrite());
-		
+				
 	}
 
 }

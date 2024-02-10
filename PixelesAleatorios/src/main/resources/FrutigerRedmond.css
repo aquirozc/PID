@@ -102,3 +102,8 @@
     
     transition: all 0.5s;
 }
+
+.rb {
+	font-size : 20px;
+	-fx-font-size : 20px;
+}
