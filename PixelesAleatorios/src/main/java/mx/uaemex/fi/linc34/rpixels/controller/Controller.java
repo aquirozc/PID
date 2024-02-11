@@ -7,12 +7,11 @@ import javafx.geometry.Bounds;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -22,17 +21,17 @@ public class Controller implements IControllerFXML {
 	
 	private Parent parent = getActivity("Main.fxml");
 	private ImageView target_vw = (ImageView) parent.lookup("#image_vw");
-	private ScrollPane scrollPane = (ScrollPane) parent.lookup("#scrollpane");
 	private VBox canvas = (VBox) parent.lookup("#canvas");
 	private Button openBtn = (Button) parent.lookup("#open_btn");
 	private Button saveBtn = (Button) parent.lookup("#save_btn");
 	private Button undoBtn = (Button) parent.lookup("#undo_btn");
 	private Button editBtn = (Button) parent.lookup("#edit_btn");
-	
+	private Slider zoomBar = (Slider) parent.lookup("#zoom_bar");	
 	private Image ogImage;
 	private Rectangle selectedArea = new Rectangle(0,0,0,0);
 	private FXImageIO imgHelper; 
 		
+	private double zoomFactor = 1;
 	private boolean isMouseDragging = false;
 	
 	public Controller(Stage stage) {
@@ -53,6 +52,8 @@ public class Controller implements IControllerFXML {
 		saveBtn.setOnMouseClicked(e -> imgHelper.saveImageToDisk((WritableImage) target_vw.getImage()));
 		undoBtn.setOnMouseClicked(e -> redrawImage());
 		editBtn.setOnMouseClicked(this::replaceArea);
+		
+		zoomBar.valueProperty().addListener(this::updateZoomLevel);
 		
 		imgHelper = new FXImageIO(stage);
 		
@@ -96,6 +97,7 @@ public class Controller implements IControllerFXML {
 	private void redrawImage() {
 		
 		resetSelection();
+		zoomBar.setValue(100);
 		
 		int width = (int) ogImage.getWidth();
 		int height = (int) ogImage.getHeight();
@@ -113,14 +115,11 @@ public class Controller implements IControllerFXML {
 	
 	private void replaceArea(MouseEvent event) {
 		
-		int xOffset = (int) (scrollPane.getHvalue() * (target_vw.getFitWidth() - scrollPane.viewportBoundsProperty().get().getWidth()));
-		int yOffset = (int) (scrollPane.getVvalue() * (target_vw.getFitHeight() - scrollPane.viewportBoundsProperty().get().getHeight()));
+		int x0 = (int) (selectedArea.getTranslateX() / zoomFactor);
+		int x1 = (int) (x0 + selectedArea.getWidth() / zoomFactor);
 		
-		int x0 = (int) (selectedArea.getTranslateX());
-		int x1 = (int) (x0 + selectedArea.getWidth());
-		
-		int y0 = (int) (selectedArea.getTranslateY());
-		int y1 = (int) (y0 + selectedArea.getHeight());
+		int y0 = (int) (selectedArea.getTranslateY() / zoomFactor);
+		int y1 = (int) (y0 + selectedArea.getHeight() / zoomFactor);
 		
 		imgHelper.overrideRegionRandom((WritableImage) target_vw.getImage(), x0, x1, y0, y1);
 		
@@ -132,5 +131,27 @@ public class Controller implements IControllerFXML {
 		canvas.setMaxWidth(newValue.getWidth() - 20);
         canvas.setMaxHeight(newValue.getHeight() - 20);
 	}
+	
+	private void updateZoomLevel(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+		
+		if (ogImage == null) {
+	        return;
+	    }
+
+	    double newFactor = (double) newValue / 100d;
+	    double zoomDelta = newFactor / zoomFactor;
+
+	    target_vw.setFitHeight(ogImage.getHeight() * newFactor);
+	    target_vw.setFitWidth(ogImage.getWidth() * newFactor);
+
+	    selectedArea.setTranslateX(selectedArea.getTranslateX() * zoomDelta);
+	    selectedArea.setTranslateY(selectedArea.getTranslateY() * zoomDelta);
+	    selectedArea.setWidth(selectedArea.getWidth() * zoomDelta);
+	    selectedArea.setHeight(selectedArea.getHeight() * zoomDelta);
+
+	    zoomFactor = newFactor;
+		
+	}
+	
 	
 }

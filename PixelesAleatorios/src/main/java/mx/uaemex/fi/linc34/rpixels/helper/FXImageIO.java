@@ -79,8 +79,7 @@ public class FXImageIO {
 	public void saveImageToDisk(WritableImage img) {
 		
 		File out = fChooser.showSaveDialog(owner);
-		
-				
+			
 	}
 
 }
