@@ -42,6 +42,11 @@
             <version>22-ea+16</version>
             <classifier>mac</classifier>
         </dependency>
+        <dependency>
+		  <groupId>org.glavo</groupId>
+		  <artifactId>simple-png-javafx</artifactId>
+		  <version>0.2.0</version>
+		</dependency>
     </dependencies>
 
     <build>
@@ -111,7 +116,7 @@
                         <list>javafx.scene.text.Text</list>
                         <list>javafx.stage.DirectoryChooser</list>
                         <list>javafx.stage.Stage</list>
-                        <list>javafx.scene.control.ButtonBar</list>
+                        <list>javafx.scene.control.Slider</list>
                     </reflectionList>
                 </configuration>
             </plugin>

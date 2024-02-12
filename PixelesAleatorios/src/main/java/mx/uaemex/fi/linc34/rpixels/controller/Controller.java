@@ -2,12 +2,15 @@ package mx.uaemex.fi.linc34.rpixels.controller;
 
 import java.util.List;
 
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -26,17 +29,28 @@ public class Controller implements IControllerFXML {
 	private Button saveBtn = (Button) parent.lookup("#save_btn");
 	private Button undoBtn = (Button) parent.lookup("#undo_btn");
 	private Button editBtn = (Button) parent.lookup("#edit_btn");
-	private Slider zoomBar = (Slider) parent.lookup("#zoom_bar");	
+	private Slider zoomBar = (Slider) parent.lookup("#zoom_bar");
+	private RadioButton dragModeRB = (RadioButton) parent.lookup("#dragmode_rb");
+	private RadioButton advModeRB = (RadioButton) parent.lookup("#advmode_rb");
+	private TextField x0TF = (TextField) parent.lookup("#x0_tf");
+	private TextField y0TF = (TextField) parent.lookup("#y0_tf");
+	private TextField x1TF = (TextField) parent.lookup("#x1_tf");
+	private TextField y1TF = (TextField) parent.lookup("#y1_tf");
 	private Image ogImage;
 	private Rectangle selectedArea = new Rectangle(0,0,0,0);
 	private FXImageIO imgHelper; 
 		
+	private boolean isAdvModeEnabled = false;
+	private boolean isDragModeEnabled = true;
 	private double zoomFactor = 1;
-	private boolean isMouseDragging = false;
 	
 	public Controller(Stage stage) {
 		
 		Scene scene = new Scene(parent);
+		stage.setMinWidth(800);
+		stage.setMinHeight(575);
+		stage.setWidth(900);
+		stage.setHeight(600);
 		stage.setTitle("Visor de Imagenes");
 		stage.setScene(scene);
 		stage.show();
@@ -53,6 +67,19 @@ public class Controller implements IControllerFXML {
 		undoBtn.setOnMouseClicked(e -> redrawImage());
 		editBtn.setOnMouseClicked(this::replaceArea);
 		
+		advModeRB.selectedProperty().addListener(this::enableAdvancedMode);
+		dragModeRB.selectedProperty().addListener(this::enableDragMode);
+		
+		x0TF.textProperty().addListener(this::validateNumInput);
+		y0TF.textProperty().addListener(this::validateNumInput);
+		x1TF.textProperty().addListener(this::validateNumInput);
+		y1TF.textProperty().addListener(this::validateNumInput);
+		
+		x0TF.setEditable(false);
+		y0TF.setEditable(false);
+		x1TF.setEditable(false);
+		y1TF.setEditable(false);
+		
 		zoomBar.valueProperty().addListener(this::updateZoomLevel);
 		
 		imgHelper = new FXImageIO(stage);
@@ -68,28 +95,59 @@ public class Controller implements IControllerFXML {
 		
 	}
 	
+	private void enableAdvancedMode(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+		
+		if(!newValue) {
+			return;
+		}
+		
+		isDragModeEnabled = false;
+		isAdvModeEnabled = true;
+		
+		resetSelection();
+		
+		x0TF.setEditable(true);
+		y0TF.setEditable(true);
+		x1TF.setEditable(true);
+		y1TF.setEditable(true);
+		
+	}
+	
+	private void enableDragMode(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+		
+		if(!newValue) {
+			return;
+		}
+		
+		isDragModeEnabled = true;
+		isAdvModeEnabled = false;
+		
+		resetInput();
+		
+		
+		x0TF.setEditable(false);
+		y0TF.setEditable(false);
+		x1TF.setEditable(false);
+		y1TF.setEditable(false);
+		
+		
+	}
+	
 	private void handleMouseSelection(MouseEvent event) {
 		
-		if(event.getEventType() == MouseEvent.MOUSE_PRESSED){
-            isMouseDragging = true;
-            
+		if(event.getEventType() == MouseEvent.MOUSE_PRESSED) {
             selectedArea.setTranslateX(event.getX());
             selectedArea.setTranslateY(event.getY());
             selectedArea.setWidth(0);
             selectedArea.setHeight(0);
          }
-        if(event.getEventType() == MouseEvent.MOUSE_DRAGGED && isMouseDragging){
-        	
+        if(event.getEventType() == MouseEvent.MOUSE_DRAGGED  && isDragModeEnabled){
         	int width = (int) (event.getX() - selectedArea.getTranslateX());
         	int height = (int) (event.getY() - selectedArea.getTranslateY());
         	
         	
             selectedArea.setWidth(Math.min(width, canvas.getMaxWidth() - (selectedArea.getTranslateX())));
-            selectedArea.setHeight(Math.min(height, canvas.getMaxHeight() - (selectedArea.getTranslateY())));
-            
-        }
-        if(event.getEventType() == MouseEvent.MOUSE_RELEASED) {
-        	isMouseDragging = false;
+            selectedArea.setHeight(Math.min(height, canvas.getMaxHeight() - (selectedArea.getTranslateY())));   
         }
 		
 	}
@@ -108,10 +166,18 @@ public class Controller implements IControllerFXML {
 	}
 	
 	private void resetSelection() {
-		isMouseDragging = false;
 		selectedArea.setWidth(0);
 		selectedArea.setHeight(0);
 	};
+	
+	private void resetInput() {
+		
+		x0TF.setText("");
+		y0TF.setText("");
+		x1TF.setText("");
+		y1TF.setText("");
+		
+	}
 	
 	private void replaceArea(MouseEvent event) {
 		
@@ -121,9 +187,28 @@ public class Controller implements IControllerFXML {
 		int y0 = (int) (selectedArea.getTranslateY() / zoomFactor);
 		int y1 = (int) (y0 + selectedArea.getHeight() / zoomFactor);
 		
+		if (isAdvModeEnabled) {
+			x0 = Integer.parseInt(x0TF.getText());
+			y0 = Integer.parseInt(y0TF.getText());
+			x1 = Integer.parseInt(x1TF.getText());
+			y1 = Integer.parseInt(y1TF.getText());
+		}
+		
 		imgHelper.overrideRegionRandom((WritableImage) target_vw.getImage(), x0, x1, y0, y1);
 		
 		resetSelection();
+		resetInput();
+		
+	}
+	
+	private void validateNumInput(ObservableValue<? extends String> observable, String oldValue, String newValue)  {
+		
+		if (newValue.matches("\\d*")) {
+	        return;
+	    }
+		
+		((StringProperty)observable).setValue(oldValue);
+		
 		
 	}
 	

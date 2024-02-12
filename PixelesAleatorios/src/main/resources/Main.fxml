@@ -9,6 +9,7 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -17,13 +18,19 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@FrutigerRedmond.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="600.0" stylesheets="@FrutigerRedmond.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <ImageView fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@snapshot.png" />
+                     </image>
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin></ImageView>
                   <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" prefWidth="100.0">
                      <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Editor de">
@@ -46,6 +53,12 @@
                   <String fx:value="primary-background" />
                   <String fx:value="border" />
                </styleClass>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <padding>
+                  <Insets left="15.0" />
+               </padding>
             </HBox>
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                <children>
@@ -63,66 +76,57 @@
                      <children>
                         <VBox prefWidth="180.0" HBox.hgrow="NEVER">
                            <children>
-                              <RadioButton mnemonicParsing="false" styleClass="rb" text="Arrastrar">
+                              <RadioButton id="dragmode_rb" mnemonicParsing="false" styleClass="rb" text="Modo arrastrar">
                                  <toggleGroup>
                                     <ToggleGroup fx:id="workmode" />
                                  </toggleGroup></RadioButton>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Text">
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Selecciona la region rectangular que sera reemplazada arrastrando el mouse por encima de la imagen" wrappingWidth="200.0">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
                                  <VBox.margin>
-                                    <Insets bottom="5.0" top="5.0" />
+                                    <Insets bottom="8.0" top="8.0" />
                                  </VBox.margin>
                               </Text>
-                              <RadioButton mnemonicParsing="false" styleClass="rb" text="Esquinas" toggleGroup="$workmode">
-                  
-                              </RadioButton>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Hola">
+                              <RadioButton id="advmode_rb" mnemonicParsing="false" styleClass="rb" text="Modo manual" toggleGroup="$workmode">
+                                 <VBox.margin>
+                                    <Insets top="15.0" />
+                                 </VBox.margin></RadioButton>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Establece la region que sera remplazada indicando las coordenadas de la esquina noroeste y sureste respectivamente" wrappingWidth="200.0">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
                                  <VBox.margin>
-                                    <Insets bottom="5.0" top="5.0" />
+                                    <Insets bottom="8.0" top="8.0" />
                                  </VBox.margin>
                               </Text>
                               <HBox prefWidth="200.0">
                                  <children>
-                                    <TextField prefHeight="22.0">
+                                    <TextField id="x0_tf" prefHeight="33.0" styleClass="tf">
                                        <HBox.margin>
                                           <Insets right="10.0" />
                                        </HBox.margin>
                                     </TextField>
-                                    <TextField prefHeight="22.0" />
+                                    <TextField id="y0_tf" prefHeight="33.0" styleClass="tf" />
                                  </children>
                               </HBox>
-                              <RadioButton mnemonicParsing="false" styleClass="rb" text="Tamaño" toggleGroup="$workmode">
-                           
-                              </RadioButton>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Text">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                                 <VBox.margin>
-                                    <Insets bottom="5.0" top="5.0" />
-                                 </VBox.margin>
-                              </Text>
                               <HBox prefWidth="200.0">
                                  <children>
-                                    <TextField prefHeight="22.0">
+                                    <TextField id="x1_tf" prefHeight="33.0" styleClass="tf">
                                        <HBox.margin>
                                           <Insets right="10.0" />
                                        </HBox.margin>
                                     </TextField>
-                                    <TextField prefHeight="22.0">
-                                       <HBox.margin>
-                                          <Insets right="10.0" />
-                                       </HBox.margin>
-                                    </TextField>
-                                    <TextField prefHeight="22.0" />
+                                    <TextField id="y1_tf" prefHeight="33.0" styleClass="tf" />
                                  </children>
+                                 <VBox.margin>
+                                    <Insets top="11.0" />
+                                 </VBox.margin>
                               </HBox>
                            </children>
+                           <padding>
+                              <Insets left="10.0" right="10.0" />
+                           </padding>
                         </VBox>
                      </children>
                      <styleClass>

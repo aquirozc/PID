@@ -1,20 +1,17 @@
 package mx.uaemex.fi.linc34.rpixels.helper;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
-import javax.imageio.ImageIO;
+import org.glavo.png.javafx.PNGJavaFXUtils;
 
 import javafx.scene.image.Image;
-import javafx.scene.image.PixelFormat;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -79,7 +76,13 @@ public class FXImageIO {
 	public void saveImageToDisk(WritableImage img) {
 		
 		File out = fChooser.showSaveDialog(owner);
-			
+		
+		try {
+			PNGJavaFXUtils.writeImage(img, out.toPath());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		   	
 	}
 
 }
