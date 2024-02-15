@@ -7,10 +7,12 @@ import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -25,17 +27,20 @@ public class Controller implements IControllerFXML {
 	private Parent parent = getActivity("Main.fxml");
 	private ImageView target_vw = (ImageView) parent.lookup("#image_vw");
 	private VBox canvas = (VBox) parent.lookup("#canvas");
+	
 	private Button openBtn = (Button) parent.lookup("#open_btn");
 	private Button saveBtn = (Button) parent.lookup("#save_btn");
 	private Button undoBtn = (Button) parent.lookup("#undo_btn");
 	private Button editBtn = (Button) parent.lookup("#edit_btn");
 	private Slider zoomBar = (Slider) parent.lookup("#zoom_bar");
+	
 	private RadioButton dragModeRB = (RadioButton) parent.lookup("#dragmode_rb");
 	private RadioButton advModeRB = (RadioButton) parent.lookup("#advmode_rb");
 	private TextField x0TF = (TextField) parent.lookup("#x0_tf");
 	private TextField y0TF = (TextField) parent.lookup("#y0_tf");
 	private TextField x1TF = (TextField) parent.lookup("#x1_tf");
 	private TextField y1TF = (TextField) parent.lookup("#y1_tf");
+	
 	private Image ogImage;
 	private Rectangle selectedArea = new Rectangle(0,0,0,0);
 	private FXImageIO imgHelper; 
@@ -51,7 +56,7 @@ public class Controller implements IControllerFXML {
 		stage.setMinHeight(575);
 		stage.setWidth(900);
 		stage.setHeight(600);
-		stage.setTitle("Visor de Imagenes");
+		stage.setTitle("Editor de Imagenes");
 		stage.setScene(scene);
 		stage.show();
 		
@@ -69,16 +74,14 @@ public class Controller implements IControllerFXML {
 		
 		advModeRB.selectedProperty().addListener(this::enableAdvancedMode);
 		dragModeRB.selectedProperty().addListener(this::enableDragMode);
+		dragModeRB.setSelected(true);
 		
 		x0TF.textProperty().addListener(this::validateNumInput);
 		y0TF.textProperty().addListener(this::validateNumInput);
 		x1TF.textProperty().addListener(this::validateNumInput);
 		y1TF.textProperty().addListener(this::validateNumInput);
 		
-		x0TF.setEditable(false);
-		y0TF.setEditable(false);
-		x1TF.setEditable(false);
-		y1TF.setEditable(false);
+		this.toggleTextInputs(false);
 		
 		zoomBar.valueProperty().addListener(this::updateZoomLevel);
 		
@@ -90,6 +93,10 @@ public class Controller implements IControllerFXML {
 	public void onCreate(List<String> param) {
 		
 		ogImage = imgHelper.loadImageFromArgs(param);
+		
+		if (ogImage == null) {
+			return;
+		}		
 		
 		redrawImage();
 		
@@ -105,11 +112,7 @@ public class Controller implements IControllerFXML {
 		isAdvModeEnabled = true;
 		
 		resetSelection();
-		
-		x0TF.setEditable(true);
-		y0TF.setEditable(true);
-		x1TF.setEditable(true);
-		y1TF.setEditable(true);
+		toggleTextInputs(true);
 		
 	}
 	
@@ -123,13 +126,7 @@ public class Controller implements IControllerFXML {
 		isAdvModeEnabled = false;
 		
 		resetInput();
-		
-		
-		x0TF.setEditable(false);
-		y0TF.setEditable(false);
-		x1TF.setEditable(false);
-		y1TF.setEditable(false);
-		
+		toggleTextInputs(false);
 		
 	}
 	
@@ -153,6 +150,8 @@ public class Controller implements IControllerFXML {
 	}
 	
 	private void redrawImage() {
+
+		if (ogImage == null) return;
 		
 		resetSelection();
 		zoomBar.setValue(100);
@@ -188,16 +187,29 @@ public class Controller implements IControllerFXML {
 		int y1 = (int) (y0 + selectedArea.getHeight() / zoomFactor);
 		
 		if (isAdvModeEnabled) {
-			x0 = Integer.parseInt(x0TF.getText());
-			y0 = Integer.parseInt(y0TF.getText());
-			x1 = Integer.parseInt(x1TF.getText());
-			y1 = Integer.parseInt(y1TF.getText());
+			x0 = Integer.parseInt("0".concat(x0TF.getText()));
+			y0 = Integer.parseInt("0".concat(y0TF.getText()));
+			x1 = Integer.parseInt("0".concat(x1TF.getText()));
+			y1 = Integer.parseInt("0".concat(y1TF.getText()));
 		}
 		
-		imgHelper.overrideRegionRandom((WritableImage) target_vw.getImage(), x0, x1, y0, y1);
+		try {
+			imgHelper.overrideRegionRandom((WritableImage) target_vw.getImage(), x0, x1, y0, y1);
+		} catch (Exception e) {
+			new Alert(AlertType.ERROR,"Los limites de la selección deben estar dentro de la imagen").showAndWait();
+		}
 		
 		resetSelection();
 		resetInput();
+		
+	}
+	
+	private void toggleTextInputs(boolean v) {
+		
+		x0TF.setEditable(v);
+		y0TF.setEditable(v);
+		x1TF.setEditable(v);
+		y1TF.setEditable(v);
 		
 	}
 	

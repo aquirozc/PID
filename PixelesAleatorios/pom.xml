@@ -106,7 +106,7 @@
                 <configuration>
                     <mainClass>mx.uaemex.fi.linc34.rpixels.init.FXApplication</mainClass>
                     <reflectionList>
-                   <list>javafx.scene.Parent</list>
+                   		<list>javafx.scene.Parent</list>
                         <list>javafx.scene.Scene</list>
                         <list>javafx.scene.control.Button</list>
                         <list>javafx.scene.control.ScrollPane</list>
