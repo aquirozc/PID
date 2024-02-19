@@ -85,15 +85,14 @@ public class Controller implements IControllerFXML {
 		int height = (int) ogImage.getHeight();
 		
 		Thread.ofVirtual().start(() -> {
-			
+					
 			BufferedImage bInput = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
-			bInput = SwingFXUtils.fromFXImage(input, bInput);
-			bInput = imgHelperAWT.toGrayScale(bInput);		
-			long l = System.currentTimeMillis();
-			bInput = imgHelperAWT.applyLinearFilter(bInput, kernel);
-			System.out.println(System.currentTimeMillis() - l);
 			
-			SwingFXUtils.toFXImage(bInput, (WritableImage) input);
+			bInput = SwingFXUtils.fromFXImage(input, bInput);
+			bInput = imgHelperAWT.toGrayScale(bInput);	
+			bInput = imgHelperAWT.applyLinearFilter(bInput, kernel);
+
+			target_vw.setImage(imgHelperAWT.converToSwingImage(bInput));
 			
 		});
 	}
