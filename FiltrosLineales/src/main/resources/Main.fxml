@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="600.0" stylesheets="@FrutigerRedmond.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <ImageView fitHeight="70.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@snapshot.png" />
+                     </image>
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin></ImageView>
+                  <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" prefWidth="100.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Editor de">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="  Imagenes">
+                           <font>
+                              <Font size="30.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="3.0" />
+                           </VBox.margin>
+                        </Text>
+                     </children>
+                  </VBox>
+               </children>
+               <styleClass>
+                  <String fx:value="primary-background" />
+                  <String fx:value="border" />
+               </styleClass>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <padding>
+                  <Insets left="15.0" />
+               </padding>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <ScrollPane id="scrollpane" fitToHeight="true" fitToWidth="true" prefWidth="420.0" HBox.hgrow="ALWAYS">
+                     <content>
+                        <ImageView id="image_vw" pickOnBounds="true" preserveRatio="true" />
+                     </content>
+                  </ScrollPane>
+                  <HBox alignment="CENTER" fillHeight="false" prefHeight="100.0" prefWidth="200.0">
+                     <styleClass>
+                        <String fx:value="secondary-background" />
+                        <String fx:value="border" />
+                     </styleClass>
+                     <children>
+                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Button id="laplace_btn" mnemonicParsing="false" prefHeight="38.0" prefWidth="200.0" text="Aplicar filtro Laplaciano">
+                                 <styleClass>
+                                    <String fx:value="secondary-button" />
+                                    <String fx:value="left-aligment" />
+                                 </styleClass></Button>
+                              <Button id="gauss_btn" mnemonicParsing="false" prefHeight="38.0" prefWidth="200.0" text="Aplicar filtro Gaussiano">
+                                 <styleClass>
+                                    <String fx:value="secondary-button" />
+                                    <String fx:value="left-aligment" />
+                                 </styleClass></Button>
+                              <Button id="mean_btn" mnemonicParsing="false" prefHeight="38.0" prefWidth="200.0" text="Aplicar filtro promedio">
+                                 <styleClass>
+                                    <String fx:value="secondary-button" />
+                                    <String fx:value="left-aligment" />
+                                 </styleClass></Button>
+                              <Button mnemonicParsing="false" prefHeight="38.0" prefWidth="200.0" text="TBD">
+                                 <styleClass>
+                                    <String fx:value="secondary-button" />
+                                    <String fx:value="left-aligment" />
+                                 </styleClass></Button>
+                              <Button mnemonicParsing="false" prefHeight="38.0" prefWidth="200.0" text="TBD">
+                                 <styleClass>
+                                    <String fx:value="secondary-button" />
+                                    <String fx:value="left-aligment" />
+                                 </styleClass></Button>
+                           </children>
+                           <padding>
+                              <Insets left="15.0" right="15.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" prefHeight="55.0" prefWidth="0.0" styleClass="primary-background">
+               <children>
+                  <Button id="open_btn" mnemonicParsing="false" prefHeight="36.0" prefWidth="80.0" styleClass="primary-button" text="Abrir">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin></Button>
+                  <Button id="save_btn" mnemonicParsing="false" prefHeight="36.0" prefWidth="80.0" styleClass="primary-button" text="Guardar" />
+                  <Label maxHeight="-Infinity" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                  <Slider id="zoom_bar" max="150.0" min="30.0" value="100.0" />
+                  <Label maxHeight="-Infinity" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                  <Button id="undo_btn" mnemonicParsing="false" prefHeight="36.0" prefWidth="80.0" styleClass="primary-button" text="Deshacer">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+               </padding>
+            </HBox>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>
