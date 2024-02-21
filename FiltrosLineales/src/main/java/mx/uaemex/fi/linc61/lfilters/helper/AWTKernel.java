@@ -4,16 +4,22 @@ import java.awt.image.Kernel;
 
 public enum AWTKernel {
 	
+	HIGH_PASS_KERNEL(new float[] {
+			-1f, -1f, -1f,
+	        -1f,  9f, -1f,
+	        -1f, -1f, -1f
+	}),
+	
 	SHARPER_KERNEL(new float[] { 
 			0, -1f, 0 ,
 			-1f, 5f, -1f,
 			0, -1f, 0
 	}),
 	
-	MEAN_KERNEL(new float[] {
-			1/9f, 1/9f, 1/9f,
-		    1/9f, 1/9f, 1/9f,
-		    1/9f, 1/9f, 1/9f
+	EMBOSS_KERNEL(new float[] {
+			-2f, -1f, 0f,
+		    -1f, 1f, 1f,
+		    0f, 1f, 2f
 	}),
 	
 	GAUSS_KERNEL(new float[] {

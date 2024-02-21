@@ -42,7 +42,8 @@ public class AWTImageToolkit {
 	
 	public BufferedImage toGrayScale(BufferedImage img) {
 		ColorConvertOp op = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
-        BufferedImage grayImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+		//TYPE_INT_RGB lento pero necesario para aplicar los filtros
+        BufferedImage grayImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_RGB);
         op.filter(img, grayImage);
         return grayImage;	
 	}

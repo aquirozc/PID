@@ -81,17 +81,17 @@
                                     <String fx:value="secondary-button" />
                                     <String fx:value="left-aligment" />
                                  </styleClass></Button>
-                              <Button id="mean_btn" mnemonicParsing="false" prefHeight="38.0" prefWidth="200.0" text="Aplicar filtro promedio">
+                              <Button id="sharper_btn" mnemonicParsing="false" prefHeight="38.0" prefWidth="200.0" text="Aplicar filtro Agudizador">
                                  <styleClass>
                                     <String fx:value="secondary-button" />
                                     <String fx:value="left-aligment" />
                                  </styleClass></Button>
-                              <Button mnemonicParsing="false" prefHeight="38.0" prefWidth="200.0" text="TBD">
+                              <Button id="emboss_btn" mnemonicParsing="false" prefHeight="38.0" prefWidth="200.0" text="Aplicar filtro Embossiano">
                                  <styleClass>
                                     <String fx:value="secondary-button" />
                                     <String fx:value="left-aligment" />
                                  </styleClass></Button>
-                              <Button mnemonicParsing="false" prefHeight="38.0" prefWidth="200.0" text="TBD">
+                              <Button id="high_pass_btn" mnemonicParsing="false" prefHeight="38.0" prefWidth="200.0" text="Aplicar filtro High Pass">
                                  <styleClass>
                                     <String fx:value="secondary-button" />
                                     <String fx:value="left-aligment" />

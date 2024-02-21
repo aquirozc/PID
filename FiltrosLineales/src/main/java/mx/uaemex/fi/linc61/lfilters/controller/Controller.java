@@ -29,7 +29,9 @@ public class Controller implements IControllerFXML {
 	
 	private Button laplaceBtn = (Button) parent.lookup("#laplace_btn");
 	private Button gaussBtn = (Button) parent.lookup("#gauss_btn");
-	private Button meanBtn = (Button) parent.lookup("#mean_btn");
+	private Button sharperBtn = (Button) parent.lookup("#sharper_btn");
+	private Button embossBtn = (Button) parent.lookup("#emboss_btn");
+	private Button highPassBtn = (Button) parent.lookup("#high_pass_btn");
 	
 	private AWTImageToolkit imgHelperAWT = new AWTImageToolkit();
 	private Image ogImage;
@@ -42,7 +44,7 @@ public class Controller implements IControllerFXML {
 		stage.setMinHeight(575);
 		stage.setWidth(900);
 		stage.setHeight(600);
-		stage.setTitle("Editor de Imagenes (Alejandro Quiroz Carmona");
+		stage.setTitle("Editor de Imagenes (Alejandro Quiroz Carmona)");
 		stage.setScene(scene);
 		stage.show();
 		
@@ -55,11 +57,11 @@ public class Controller implements IControllerFXML {
 		
 		laplaceBtn.setOnMouseClicked(e -> applyFilter(AWTKernel.LAPLACE_KERNEL));
 		gaussBtn.setOnMouseClicked(e -> applyFilter(AWTKernel.GAUSS_KERNEL));
-		meanBtn.setOnMouseClicked(e -> applyFilter(AWTKernel.MEAN_KERNEL));
+		sharperBtn.setOnMouseClicked(e -> applyFilter(AWTKernel.SHARPER_KERNEL));
+		embossBtn.setOnMouseClicked(e -> applyFilter(AWTKernel.EMBOSS_KERNEL));
+		highPassBtn.setOnMouseClicked(e -> applyFilter(AWTKernel.HIGH_PASS_KERNEL));
 		
-		zoomBar.valueProperty().addListener(this::updateZoomLevel);
-		
-		
+		zoomBar.valueProperty().addListener(this::updateZoomLevel);		
 		
 	}
 	
