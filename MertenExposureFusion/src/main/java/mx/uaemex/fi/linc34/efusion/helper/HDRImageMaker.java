@@ -15,8 +15,9 @@ public class HDRImageMaker {
 		int height = stack[0].getHeight();
 		int len = stack.length;
 		
-		BufferedImage res = new BufferedImage(widht, height, BufferedImage.TYPE_INT_RGB);
-		double[][][] relativeWeightsMap = computeRelativeWeightMap(computeWeightsMap(stack));		
+		BufferedImage res = new BufferedImage(widht, height, BufferedImage.TYPE_3BYTE_BGR);
+		double[][][] WeightsMap = computeWeightsMap(stack);
+		double[][][] relativeWeightsMap = computeRelativeWeightMap(WeightsMap);	
 		
 		for (int i = 0; i < widht; i++) {
 			
@@ -46,6 +47,7 @@ public class HDRImageMaker {
 			
 		}	
 		
+		
 		return res;
 		
 	}
@@ -61,13 +63,14 @@ public class HDRImageMaker {
 		
 		for (int k = 0; k < len; k++) {
 			
+			
 			BufferedImage aux = stack[k];
-			BufferedImage edge = Convolver.applyLinearFilter(Convolver.toGrayScale(aux), Filter.LAPLACE_KERNEL);
+			BufferedImage edge = Convolver.applyLinearFilter(aux,Filter.LAPLACE_KERNEL);
 			
 			for (int i = 0; i < widht; i++) {
 				
 				for (int j = 0; j < height; j++) {
-					
+
 					int color = aux.getRGB(i, j);
 					
 					int r = (color & 0xFF0000) >> 16;
@@ -75,27 +78,29 @@ public class HDRImageMaker {
 					int b = color & 0xFF;
 					
 					//Contrast Weight
-					double cWeight = Math.abs(edge.getRGB(i, j) & 0xFF);
+					double cWeight = Math.abs(edge.getRGB(i, j) & 0xFF) /255d;
 					
 					//Saturation Weight
 					double mu = (r + g +b)/3d;
-					double sWeight = DoubleStream.of(r,g,b).map(x -> Math.pow(x-mu, 2)).reduce(0, (x,y) -> x + y) / 3d;
+					//double sWeight = DoubleStream.of(r,g,b).map(x -> Math.pow(x-mu, 2)).reduce(0, (x,y) -> x + y) / 3d;
+					double sWeight = (Math.pow(r-mu, 2) + Math.pow(g-mu, 2) +Math.pow(b-mu, 2))/3d;
 					
 					//Exposedness Weight
-					double red = Math.exp(Math.pow(-0.5 * r - 0.5, 1) / Math.pow(sigma, 1));
-					double green = Math.exp(Math.pow(-0.5 * g - 0.5, 1) / Math.pow(sigma, 1));
-					double blue = Math.exp(Math.pow(-0.5 * b - 0.5, 1) / Math.pow(sigma, 1));
+					double red = Math.exp(-(Math.pow(r/255d-0.5, 2)/(2*Math.pow(sigma, 2))));
+					double green = Math.exp(-(Math.pow(g/255d-0.5, 2)/(2*Math.pow(sigma, 2))));
+					double blue = Math.exp(-(Math.pow(b/255d-0.5, 2)/(2*Math.pow(sigma, 2))));
 					
 					double eWeight =  red * green * blue;
 					
-					
-					map[i][j][k] = Math.pow(cWeight, contrastParam) * Math.pow(sWeight, saturationParam) ;//* Math.pow(eWeight, exposednessParam);
+					map[i][j][k] = len + (Math.pow(cWeight, contrastParam)) +  Math.pow(sWeight, saturationParam) + Math.pow(eWeight, exposednessParam);
 					
 				}
 				
 			}
 			
 		}
+		
+		
 		
 		return map;
 		
@@ -106,7 +111,7 @@ public class HDRImageMaker {
 		int widht = wMap.length;
 		int height = wMap[0].length;
 		int len = wMap[0][0].length;
-		
+	
 		double map[][][] = new double[widht][height][len];
 		
 		for (int i = 0; i < widht; i++) {
@@ -124,9 +129,7 @@ public class HDRImageMaker {
 				}
 				
 			}
-			
 		}
-		
 		return map;
 		
 	}

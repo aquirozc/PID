@@ -104,6 +104,8 @@ public class Controller implements IControllerFXML {
 	
 	public void onCreate(List<String> param) {
 		
+		System.out.println("Inicio");
+		
 		File file = new DirectoryChooser().showDialog(stage);
 		
 		Thread.ofVirtual().start(() -> {
@@ -118,18 +120,25 @@ public class Controller implements IControllerFXML {
 												}
 					
 			}).filter(i-> i != null).toArray(BufferedImage[]::new);
-		
 			
-			System.out.println(stack.length);
+			
 			
 			try {
-				ImageIO.write(new HDRImageMaker().bleedImages(stack), "jpg", new File("/Volumes/Elements/Pene.png"));
+				
+				
+				BufferedImage imgBufferedImage =  new HDRImageMaker().bleedImages(stack);		
+
+				
+				ImageIO.write(imgBufferedImage, "jpg", new File("/Volumes/Elements/Pene.png"));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
+			System.out.println("WEIGHT MAP");
 			System.out.println(System.currentTimeMillis() - l);
+			
+			System.out.println("LISTO");
 			
 		});
 		
