@@ -1,9 +1,12 @@
-package mx.uaemex.fi.linc34.efusion.helper;
+package mx.uaemex.fi.linc34.efusion.mertens;
 
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.stream.IntStream;
+
+import mx.uaemex.fi.linc34.efusion.helper.Convolver;
+import mx.uaemex.fi.linc34.efusion.helper.Filter;
 
 public class Sampler {
 	

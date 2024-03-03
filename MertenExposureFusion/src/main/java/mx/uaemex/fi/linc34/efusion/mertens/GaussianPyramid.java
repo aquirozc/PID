@@ -1,4 +1,4 @@
-package mx.uaemex.fi.linc34.efusion.helper;
+package mx.uaemex.fi.linc34.efusion.mertens;
 
 import java.awt.image.BufferedImage;
 import java.util.stream.IntStream;

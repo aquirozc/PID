@@ -1,7 +1,8 @@
 package mx.uaemex.fi.linc34.efusion.helper;
 
 import java.awt.image.BufferedImage;
-import java.util.stream.DoubleStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HDRImageMaker {
 	
@@ -61,46 +62,59 @@ public class HDRImageMaker {
 		double sigma = 0.2d;
 		double map[][][] = new double[widht][height][len];
 		
-		for (int k = 0; k < len; k++) {
+		List<Thread> threads = new ArrayList<Thread>();	
+		for (int kk = 0; kk < len; kk++) {
 			
+			final int k = kk;
 			
-			BufferedImage aux = stack[k];
-			BufferedImage edge = Convolver.applyLinearFilter(aux,Filter.LAPLACE_KERNEL);
-			
-			for (int i = 0; i < widht; i++) {
+			Thread t = Thread.ofVirtual().start(() -> {
 				
-				for (int j = 0; j < height; j++) {
+				BufferedImage aux = stack[k];
+				BufferedImage edge = Convolver.applyLinearFilter(aux,Filter.LAPLACE_KERNEL);
+				
+				for (int i = 0; i < widht; i++) {
+					
+					for (int j = 0; j < height; j++) {
 
-					int color = aux.getRGB(i, j);
-					
-					int r = (color & 0xFF0000) >> 16;
-					int g = (color & 0xFF00) >> 8;
-					int b = color & 0xFF;
-					
-					//Contrast Weight
-					double cWeight = Math.abs(edge.getRGB(i, j) & 0xFF) /255d;
-					
-					//Saturation Weight
-					double mu = (r + g +b)/3d;
-					//double sWeight = DoubleStream.of(r,g,b).map(x -> Math.pow(x-mu, 2)).reduce(0, (x,y) -> x + y) / 3d;
-					double sWeight = (Math.pow(r-mu, 2) + Math.pow(g-mu, 2) +Math.pow(b-mu, 2))/3d;
-					
-					//Exposedness Weight
-					double red = Math.exp(-(Math.pow(r/255d-0.5, 2)/(2*Math.pow(sigma, 2))));
-					double green = Math.exp(-(Math.pow(g/255d-0.5, 2)/(2*Math.pow(sigma, 2))));
-					double blue = Math.exp(-(Math.pow(b/255d-0.5, 2)/(2*Math.pow(sigma, 2))));
-					
-					double eWeight =  red * green * blue;
-					
-					map[i][j][k] = len + (Math.pow(cWeight, contrastParam)) +  Math.pow(sWeight, saturationParam) + Math.pow(eWeight, exposednessParam);
+						int color = aux.getRGB(i, j);
+						
+						int r = (color & 0xFF0000) >> 16;
+						int g = (color & 0xFF00) >> 8;
+						int b = color & 0xFF;
+						
+						//Contrast Weight
+						double cWeight = Math.abs(edge.getRGB(i, j) & 0xFF) /255d;
+						
+						//Saturation Weight
+						double mu = (r + g +b)/3d;
+						//double sWeight = DoubleStream.of(r,g,b).map(x -> Math.pow(x-mu, 2)).reduce(0, (x,y) -> x + y) / 3d;
+						double sWeight = (Math.pow(r-mu, 2) + Math.pow(g-mu, 2) +Math.pow(b-mu, 2))/3d;
+						
+						//Exposedness Weight
+						double red = Math.exp(-(Math.pow(r/255d-0.5, 2)/(2*Math.pow(sigma, 2))));
+						double green = Math.exp(-(Math.pow(g/255d-0.5, 2)/(2*Math.pow(sigma, 2))));
+						double blue = Math.exp(-(Math.pow(b/255d-0.5, 2)/(2*Math.pow(sigma, 2))));
+						
+						double eWeight =  red * green * blue;
+						
+						map[i][j][k] = len + (Math.pow(cWeight, contrastParam)) +  Math.pow(sWeight, saturationParam) + Math.pow(eWeight, exposednessParam);
+						
+					}
 					
 				}
-				
-			}
+			});		
 			
+			threads.add(t);
 		}
 		
-		
+		for (Thread thread : threads) {
+			try {
+				thread.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 		return map;
 		

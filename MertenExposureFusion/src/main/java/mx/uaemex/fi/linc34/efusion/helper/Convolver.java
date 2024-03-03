@@ -9,7 +9,7 @@ public class Convolver {
 	
 	public static BufferedImage toGrayScale(BufferedImage img) {
 		ColorConvertOp op = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
-        BufferedImage grayImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_RGB);
+        BufferedImage grayImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
         op.filter(img, grayImage);
         return grayImage;	
 	}

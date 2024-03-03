@@ -1,4 +1,4 @@
-package mx.uaemex.fi.linc34.efusion.helper;
+package mx.uaemex.fi.linc34.efusion.mertens;
 
 import static java.lang.Math.floor;
 import static java.lang.Math.log;
